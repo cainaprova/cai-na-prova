@@ -2,11 +2,14 @@
 
 import { Cloud, Shield, BarChart3, Award, Car } from 'lucide-react';
 
+
 export default function Hero() {
   const scrollToFilters = () => {
     const element = document.getElementById('filters');
     if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
+      const yOffset = -80; // ajuste para altura do header fixo
+      const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+      window.scrollTo({ top: y, behavior: 'smooth' });
     }
   };
 
@@ -20,13 +23,15 @@ export default function Hero() {
           Simulados organizados por área, tempo e dificuldade.
         </p>
         <button
+          type="button"
           onClick={scrollToFilters}
-          className="bg-blue-500 hover:bg-blue-600 active:bg-blue-700 text-white font-bold py-4 px-8 rounded-full text-lg transition transform hover:scale-105 active:scale-95 cursor-pointer"
+          style={{ position: 'relative', zIndex: 99999 }}
+          className="bg-blue-500 hover:bg-blue-600 active:bg-blue-700 text-white font-bold py-4 px-8 rounded-full text-lg transition-all duration-150 shadow-lg transform hover:scale-105 active:scale-95 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2"
         >
           Comece agora
         </button>
       </div>
-      <div className="absolute inset-0 opacity-10">
+      <div className="absolute inset-0 opacity-10 pointer-events-none">
         <Cloud className="absolute top-10 left-10 w-16 h-16 text-blue-400" />
         <Shield className="absolute top-20 right-20 w-20 h-20 text-blue-300" />
         <BarChart3 className="absolute bottom-20 left-20 w-18 h-18 text-blue-500" />
