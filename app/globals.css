@@ -16,6 +16,10 @@
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
+    --primary: #1E90FF;
+    --primary-light: #87CEEB;
+    --secondary: #333333;
+    --accent: #ffffff;
   }
 }
 
