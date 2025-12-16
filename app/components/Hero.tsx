@@ -31,7 +31,7 @@ export default function Hero() {
           Comece agora
         </button>
       </div>
-      <div className="absolute inset-0 opacity-10 pointer-events-none">
+      <div className="absolute inset-0 opacity-10 pointer-events-none hidden sm:block">
         <Cloud className="absolute top-10 left-10 w-16 h-16 text-blue-400" />
         <Shield className="absolute top-20 right-20 w-20 h-20 text-blue-300" />
         <BarChart3 className="absolute bottom-20 left-20 w-18 h-18 text-blue-500" />
