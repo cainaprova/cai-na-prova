@@ -1,49 +1,50 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+// Exemplos reais para cada área/tipo
 const simuladosMock: Record<string, { id: string; nome: string; descricao: string }[]> = {
   // Certificações
   aws: [
     { id: "aws-practitioner", nome: "AWS Certified Cloud Practitioner", descricao: "Simulado para a certificação básica da AWS." },
-    { id: "aws-developer", nome: "AWS Certified Developer", descricao: "Simulado para desenvolvedores AWS." },
-    { id: "aws-solutions", nome: "AWS Solutions Architect", descricao: "Simulado para arquitetos de soluções AWS." },
+    { id: "aws-developer", nome: "AWS Certified Developer Associate", descricao: "Simulado para desenvolvedores AWS." },
+    { id: "aws-solutions", nome: "AWS Solutions Architect Associate", descricao: "Simulado para arquitetos de soluções AWS." },
   ],
   azure: [
-    { id: "azure-fundamentals", nome: "Azure Fundamentals", descricao: "Simulado para fundamentos do Azure." },
-    { id: "azure-developer", nome: "Azure Developer", descricao: "Simulado para desenvolvedores Azure." },
+    { id: "azure-fundamentals", nome: "Microsoft Azure Fundamentals (AZ-900)", descricao: "Simulado para fundamentos do Azure." },
+    { id: "azure-administrator", nome: "Azure Administrator Associate (AZ-104)", descricao: "Simulado para administradores Azure." },
   ],
   "google-cloud": [
-    { id: "gcp-associate", nome: "Google Cloud Associate", descricao: "Simulado para Google Cloud Associate." },
-    { id: "gcp-professional", nome: "Google Cloud Professional", descricao: "Simulado para Google Cloud Professional." },
+    { id: "gcp-associate", nome: "Google Associate Cloud Engineer", descricao: "Simulado para Google Cloud Associate." },
+    { id: "gcp-professional", nome: "Google Professional Cloud Architect", descricao: "Simulado para Google Cloud Professional." },
   ],
   comptia: [
-    { id: "comptia-a-plus", nome: "CompTIA A+", descricao: "Simulado para CompTIA A+." },
-    { id: "comptia-security-plus", nome: "CompTIA Security+", descricao: "Simulado para CompTIA Security+." },
+    { id: "comptia-a-plus", nome: "CompTIA A+", descricao: "Simulado para certificação CompTIA A+." },
+    { id: "comptia-security-plus", nome: "CompTIA Security+", descricao: "Simulado para certificação CompTIA Security+." },
   ],
   linux: [
-    { id: "linux-essentials", nome: "Linux Essentials", descricao: "Simulado para Linux Essentials." },
-    { id: "linux-lpic1", nome: "Linux LPIC-1", descricao: "Simulado para Linux LPIC-1." },
+    { id: "lpi-essentials", nome: "LPI Linux Essentials", descricao: "Simulado para Linux Essentials." },
+    { id: "lpi-1", nome: "LPI LPIC-1", descricao: "Simulado para LPIC-1." },
   ],
   // Concursos Públicos
   pm: [
-    { id: "pm-sp", nome: "PM-SP", descricao: "Simulado para Polícia Militar de SP." },
-    { id: "pm-mg", nome: "PM-MG", descricao: "Simulado para Polícia Militar de MG." },
+    { id: "pm-sp", nome: "PM-SP", descricao: "Simulado para Polícia Militar de São Paulo." },
+    { id: "pm-mg", nome: "PM-MG", descricao: "Simulado para Polícia Militar de Minas Gerais." },
   ],
   pf: [
-    { id: "pf-agente", nome: "PF Agente", descricao: "Simulado para Agente da Polícia Federal." },
-    { id: "pf-escrivao", nome: "PF Escrivão", descricao: "Simulado para Escrivão da PF." },
+    { id: "pf-agente", nome: "Polícia Federal - Agente", descricao: "Simulado para Agente da Polícia Federal." },
+    { id: "pf-escrivao", nome: "Polícia Federal - Escrivão", descricao: "Simulado para Escrivão da PF." },
   ],
   tribunais: [
-    { id: "tj-sp", nome: "TJ-SP", descricao: "Simulado para Tribunal de Justiça de SP." },
-    { id: "trf3", nome: "TRF-3", descricao: "Simulado para Tribunal Regional Federal da 3ª Região." },
+    { id: "tj-sp", nome: "Tribunal de Justiça de São Paulo (TJ-SP)", descricao: "Simulado para concursos do TJ-SP." },
+    { id: "trf3", nome: "Tribunal Regional Federal da 3ª Região (TRF-3)", descricao: "Simulado para concursos do TRF-3." },
   ],
   inss: [
-    { id: "inss-tecnico", nome: "INSS Técnico", descricao: "Simulado para Técnico do INSS." },
-    { id: "inss-analista", nome: "INSS Analista", descricao: "Simulado para Analista do INSS." },
+    { id: "inss-tecnico", nome: "INSS Técnico do Seguro Social", descricao: "Simulado para Técnico do INSS." },
+    { id: "inss-analista", nome: "INSS Analista do Seguro Social", descricao: "Simulado para Analista do INSS." },
   ],
   bancos: [
-    { id: "bb", nome: "Banco do Brasil", descricao: "Simulado para Banco do Brasil." },
-    { id: "caixa", nome: "Caixa Econômica Federal", descricao: "Simulado para Caixa." },
+    { id: "bb", nome: "Banco do Brasil - Escriturário", descricao: "Simulado para Escriturário do Banco do Brasil." },
+    { id: "caixa", nome: "Caixa Econômica Federal - Técnico Bancário", descricao: "Simulado para Técnico Bancário da Caixa." },
   ],
   // Vestibular
   enem: [
@@ -68,12 +69,12 @@ const simuladosMock: Record<string, { id: string; nome: string; descricao: strin
   ],
   // Matérias Escolares
   matematica: [
-    { id: "matematica-basica", nome: "Matemática Básica", descricao: "Simulado de matemática básica." },
-    { id: "matematica-avancada", nome: "Matemática Avançada", descricao: "Simulado de matemática avançada." },
+    { id: "matematica-basica", nome: "Matemática Básica", descricao: "Simulado de matemática básica para ensino fundamental e médio." },
+    { id: "matematica-avancada", nome: "Matemática Avançada", descricao: "Simulado de matemática avançada para vestibulares." },
   ],
   portugues: [
-    { id: "portugues-basico", nome: "Português Básico", descricao: "Simulado de português básico." },
-    { id: "portugues-avancado", nome: "Português Avançado", descricao: "Simulado de português avançado." },
+    { id: "portugues-basico", nome: "Português Básico", descricao: "Simulado de português básico para ensino fundamental e médio." },
+    { id: "portugues-avancado", nome: "Português Avançado", descricao: "Simulado de português avançado para vestibulares." },
   ],
   historia: [
     { id: "historia-brasil", nome: "História do Brasil", descricao: "Simulado de história do Brasil." },
@@ -84,8 +85,8 @@ const simuladosMock: Record<string, { id: string; nome: string; descricao: strin
     { id: "geografia-mundo", nome: "Geografia Mundial", descricao: "Simulado de geografia mundial." },
   ],
   ciencias: [
-    { id: "ciencias-naturais", nome: "Ciências Naturais", descricao: "Simulado de ciências naturais." },
-    { id: "ciencias-biologicas", nome: "Ciências Biológicas", descricao: "Simulado de ciências biológicas." },
+    { id: "ciencias-naturais", nome: "Ciências Naturais", descricao: "Simulado de ciências naturais para ensino fundamental e médio." },
+    { id: "ciencias-biologicas", nome: "Ciências Biológicas", descricao: "Simulado de ciências biológicas para vestibulares." },
   ],
 };
 
