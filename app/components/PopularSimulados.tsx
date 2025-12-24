@@ -1,3 +1,4 @@
+"use client";
 import { GraduationCap, Briefcase, Award, Car } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
