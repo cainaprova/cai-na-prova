@@ -1,4 +1,5 @@
 import { GraduationCap, Briefcase, Award, Car } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 const categories = [
   {
@@ -34,33 +35,70 @@ const categories = [
   }
 ];
 
-export default function PopularSimulados() {
-  return (
-    <section className="py-16 px-4 bg-gray-900">
-      <div className="container mx-auto">
-        <h2 className="text-3xl font-bold text-center text-white mb-12">Simulados Populares</h2>
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 auto-rows-max">
-          {categories.map(category => (
-            <div key={category.title}>
-              <h3 className="text-xl font-semibold text-blue-400 mb-4">{category.title}</h3>
-              <div className="space-y-4">
-                {category.items.map(item => {
-                  const Icon = item.icon;
-                  return (
-                    <div key={item.name} className="bg-gray-800 p-4 rounded-lg hover:bg-gray-700 transition cursor-pointer h-32 flex flex-col justify-between">
-                      <div>
-                        <Icon className="w-8 h-8 text-blue-400 mb-2" />
-                        <h4 className="text-white font-semibold">{item.name}</h4>
-                      </div>
-                      <p className="text-gray-400 text-sm">{item.desc}</p>
+const router = useRouter();
+
+// Mapeamento para slug e tipo
+const getTipoAndArea = (categoryTitle: string, itemName: string) => {
+  let tipo = '';
+  let area = '';
+  switch (categoryTitle) {
+    case 'Vestibular':
+      tipo = 'vestibular';
+      area = itemName.toLowerCase();
+      break;
+    case 'Concursos Públicos':
+      tipo = 'concursos';
+      area = itemName.toLowerCase();
+      break;
+    case 'Certificações de Tecnologia':
+      tipo = 'certificacoes';
+      area = itemName.toLowerCase().replace(/ /g, '-');
+      break;
+    case 'Detran':
+      tipo = 'detran';
+      area = itemName.toLowerCase().replace(/ /g, '-');
+      break;
+    default:
+      break;
+  }
+  return { tipo, area };
+};
+
+return (
+  <section className="py-16 px-4 bg-gray-900">
+    <div className="container mx-auto">
+      <h2 className="text-3xl font-bold text-center text-white mb-12">Simulados Populares</h2>
+      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 auto-rows-max">
+        {categories.map(category => (
+          <div key={category.title}>
+            <h3 className="text-xl font-semibold text-blue-400 mb-4">{category.title}</h3>
+            <div className="space-y-4">
+              {category.items.map(item => {
+                const Icon = item.icon;
+                const { tipo, area } = getTipoAndArea(category.title, item.name);
+                return (
+                  <div
+                    key={item.name}
+                    className="bg-gray-800 p-4 rounded-lg hover:bg-gray-700 transition cursor-pointer h-32 flex flex-col justify-between"
+                    onClick={() => {
+                      if (tipo && area) {
+                        router.push(`/simulados/${tipo}/${area}`);
+                      }
+                    }}
+                  >
+                    <div>
+                      <Icon className="w-8 h-8 text-blue-400 mb-2" />
+                      <h4 className="text-white font-semibold">{item.name}</h4>
                     </div>
-                  );
-                })}
-              </div>
+                    <p className="text-gray-400 text-sm">{item.desc}</p>
+                  </div>
+                );
+              })}
             </div>
-          ))}
-        </div>
+          </div>
+        ))}
       </div>
-    </section>
-  );
+    </div>
+  </section>
+);
 }
