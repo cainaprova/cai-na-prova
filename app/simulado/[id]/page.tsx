@@ -1,46 +1,87 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import { simuladosPerguntasMock } from "../simuladosPerguntasMock";
+import { supabase } from "../../lib/supabase";
 import { useState, useEffect } from "react";
+
 
 export default function SimuladoPage() {
   const params = useParams();
+  const id = typeof params.id === "string"
+    ? params.id
+    : Array.isArray(params.id)
+      ? params.id[0]
+      : "";
 
-  const id =
-    typeof params.id === "string"
-      ? params.id
-      : Array.isArray(params.id)
-        ? params.id[0]
-        : "";
-
-  const simulado = simuladosPerguntasMock[id];
-
-  if (!simulado) {
-    return <div className="text-white p-8">Simulado não encontrado.</div>;
-  }
-
-  // Estados
+  const [simulado, setSimulado] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [erro, setErro] = useState("");
   const [indice, setIndice] = useState(0);
   const [respostas, setRespostas] = useState<number[]>([]);
   const [finalizado, setFinalizado] = useState(false);
-  const [tempoRestante, setTempoRestante] = useState(simulado.tempo * 60);
+  const [tempoRestante, setTempoRestante] = useState(0);
 
-  // Timer
+
+  useEffect(() => {
+    async function fetchSimulado() {
+      setLoading(true);
+      setErro("");
+      // Busca o simulado
+      const { data: simuladoData, error: simuladoError } = await supabase
+        .from("simulados")
+        .select("*, perguntas:perguntas(*, alternativas:alternativas(*))")
+        .eq("id", id)
+        .single();
+      if (simuladoError || !simuladoData) {
+        setErro("Simulado não encontrado.");
+        setLoading(false);
+        return;
+      }
+      // Ajusta estrutura para compatibilidade com o código existente
+      setSimulado({
+        id: simuladoData.id,
+        nome: simuladoData.nome,
+        tempo: simuladoData.tempo,
+        perguntas: (simuladoData.perguntas || []).map((p: any) => ({
+          enunciado: p.enunciado,
+          alternativas: (p.alternativas || []).map((a: any) => a.texto),
+          correta: p.correta
+        }))
+      });
+      setLoading(false);
+    }
+    fetchSimulado();
+  }, [id]);
+
+
+  useEffect(() => {
+    if (simulado) {
+      setTempoRestante(simulado.tempo * 60);
+      // Inicializa respostas com o mesmo tamanho das perguntas, preenchido com undefined
+      setRespostas(Array(simulado.perguntas.length).fill(undefined));
+      setIndice(0);
+      setFinalizado(false);
+    }
+  }, [simulado]);
+
   useEffect(() => {
     if (finalizado) return;
-
     if (tempoRestante <= 0) {
       setFinalizado(true);
       return;
     }
-
     const timer = setInterval(() => {
       setTempoRestante((t) => t - 1);
     }, 1000);
-
     return () => clearInterval(timer);
   }, [tempoRestante, finalizado]);
+
+  if (loading) {
+    return <div className="text-white p-8">Carregando simulado...</div>;
+  }
+  if (erro || !simulado) {
+    return <div className="text-white p-8">{erro || "Simulado não encontrado."}</div>;
+  }
 
   // Funções
   function responder(i: number) {
@@ -65,10 +106,11 @@ export default function SimuladoPage() {
     setFinalizado(true);
   }
 
-  // Resultado
-  const acertos = respostas.filter(
-    (r, i) => r === simulado.perguntas[i].correta
-  ).length;
+  // Resultado: só conta como acerto se respondeu e acertou
+  const acertos = respostas.reduce(
+    (acc, r, i) => (typeof r === "number" && r === simulado.perguntas[i].correta ? acc + 1 : acc),
+    0
+  );
 
   function formatarTempo(seg: number) {
     const m = Math.floor(seg / 60);
@@ -100,7 +142,7 @@ export default function SimuladoPage() {
         <h2 className="font-semibold mb-2">Gabarito:</h2>
 
         <ul className="mb-4">
-          {simulado.perguntas.map((p, i) => (
+          {simulado.perguntas.map((p: any, i: number) => (
             <li key={i} className="mb-2">
               <strong>{i + 1}.</strong> {p.enunciado}
               <br />
@@ -129,7 +171,7 @@ export default function SimuladoPage() {
           ))}
         </ul>
 
-        <a href="/" className="text-blue-400 underline">
+        <a href="/" className="text-blue-400 underline block mt-4">
           Voltar ao início
         </a>
       </div>
@@ -155,7 +197,7 @@ export default function SimuladoPage() {
       <div className="mb-4 font-semibold">{pergunta.enunciado}</div>
 
       <div className="mb-6 grid gap-2">
-        {pergunta.alternativas.map((alt, i) => (
+        {pergunta.alternativas.map((alt: string, i: number) => (
           <button
             key={i}
             onClick={() => responder(i)}
@@ -169,7 +211,7 @@ export default function SimuladoPage() {
         ))}
       </div>
 
-      <div className="flex gap-2">
+      <div className="flex gap-2 mt-4 flex-wrap">
         <button
           onClick={anterior}
           disabled={indice === 0}
@@ -177,22 +219,23 @@ export default function SimuladoPage() {
         >
           Anterior
         </button>
-
-        {indice < simulado.perguntas.length - 1 ? (
+        {indice < simulado.perguntas.length - 1 && (
           <button
             onClick={proxima}
             className="px-4 py-2 bg-blue-700 rounded"
           >
             Próxima
           </button>
-        ) : (
-          <button
-            onClick={finalizar}
-            className="px-4 py-2 bg-green-700 rounded"
-          >
-            Finalizar
-          </button>
         )}
+        <button
+          onClick={finalizar}
+          className="px-4 py-2 bg-green-700 rounded"
+        >
+          Finalizar
+        </button>
+        <a href="/" className="px-4 py-2 bg-gray-500 rounded text-white text-center">
+          Home
+        </a>
       </div>
     </div>
   );

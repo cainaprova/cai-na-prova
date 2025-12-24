@@ -31,6 +31,8 @@ function slugify(str: string) {
 export default function Filters() {
   const [tipo, setTipo] = useState('');
   const [area, setArea] = useState('');
+  const [dificuldade, setDificuldade] = useState('');
+  const [tempo, setTempo] = useState('');
   const router = useRouter();
 
   return (
@@ -61,17 +63,17 @@ export default function Filters() {
               <option key={areaOpt} value={slugify(areaOpt)}>{areaOpt}</option>
             ))}
           </select>
-          <select className="bg-gray-700 text-white px-4 py-2 rounded-lg border border-gray-600 w-full sm:w-auto text-sm sm:text-base">
+          <select className="bg-gray-700 text-white px-4 py-2 rounded-lg border border-gray-600 w-full sm:w-auto text-sm sm:text-base" value={dificuldade} onChange={e => setDificuldade(e.target.value)}>
             <option value="" disabled>Dificuldade</option>
-            <option value="Fácil">Fácil</option>
-            <option value="Intermediário">Intermediário</option>
-            <option value="Difícil">Difícil</option>
+            <option value="FACIL">Fácil</option>
+            <option value="INTERMEDIARIO">Intermediário</option>
+            <option value="DIFICIL">Difícil</option>
           </select>
-          <select className="bg-gray-700 text-white px-4 py-2 rounded-lg border border-gray-600 w-full sm:w-auto text-sm sm:text-base">
+          <select className="bg-gray-700 text-white px-4 py-2 rounded-lg border border-gray-600 w-full sm:w-auto text-sm sm:text-base" value={tempo} onChange={e => setTempo(e.target.value)}>
             <option value="" disabled>Tempo de prova</option>
-            <option value="Até 30 minutos">Até 30 minutos</option>
-            <option value="30 a 60 minutos">30 a 60 minutos</option>
-            <option value="Mais de 60 minutos">Mais de 60 minutos</option>
+            <option value="30">Até 30 minutos</option>
+            <option value="60">30 a 60 minutos</option>
+            <option value="61">Mais de 60 minutos</option>
           </select>
           <button
             type="button"
@@ -85,7 +87,7 @@ export default function Filters() {
                 alert('Selecione a área!');
                 return;
               }
-              router.push(`/simulados/${tipo}/${area}`);
+              router.push(`/simulados/${tipo}/${area}?dificuldade=${dificuldade}&tempo=${tempo}`);
             }}
           >
             Buscar
