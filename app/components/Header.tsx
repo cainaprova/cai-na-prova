@@ -1,12 +1,15 @@
 'use client';
 
 import { Search } from 'lucide-react';
+import Link from 'next/link';
 
 export default function Header() {
   return (
     <header className="bg-gray-900 text-white p-4 fixed top-0 w-full z-10 shadow-lg">
       <div className="container mx-auto flex justify-between items-center">
-        <div className="text-2xl font-bold text-blue-400">Cai Na Prova</div>
+        <Link href="/" className="text-2xl font-bold text-blue-400 hover:text-blue-300 transition cursor-pointer" title="Ir para Home">
+          Cai Na Prova
+        </Link>
         <div className="flex-1 max-w-md mx-8">
           <div className="relative">
             <input
