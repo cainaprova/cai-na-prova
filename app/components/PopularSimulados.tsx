@@ -36,37 +36,8 @@ const categories = [
   }
 ];
 
-
 export default function PopularSimulados() {
   const router = useRouter();
-
-  // Mapeamento para slug e tipo
-  const getTipoAndArea = (categoryTitle: string, itemName: string) => {
-    let tipo = '';
-    let area = '';
-    switch (categoryTitle) {
-      case 'Vestibular':
-        tipo = 'vestibular';
-        area = itemName.toLowerCase();
-        break;
-      case 'Concursos Públicos':
-        tipo = 'concursos';
-        area = itemName.toLowerCase();
-        break;
-      case 'Certificações de Tecnologia':
-        tipo = 'certificacoes';
-        area = itemName.toLowerCase().replace(/ /g, '-');
-        break;
-      case 'Detran':
-        tipo = 'detran';
-        area = itemName.toLowerCase().replace(/ /g, '-');
-        break;
-      default:
-        break;
-    }
-    return { tipo, area };
-  };
-
   return (
     <section className="py-16 px-4 bg-gray-900">
       <div className="container mx-auto">
@@ -78,16 +49,17 @@ export default function PopularSimulados() {
               <div className="space-y-4">
                 {category.items.map(item => {
                   const Icon = item.icon;
-                  const { tipo, area } = getTipoAndArea(category.title, item.name);
+                  const tipo = category.title === 'Vestibular' ? 'vestibular'
+                    : category.title === 'Concursos Públicos' ? 'concursos'
+                      : category.title === 'Certificações de Tecnologia' ? 'certificacoes'
+                        : category.title === 'Detran' ? 'detran'
+                          : '';
+                  const area = item.name.toLowerCase().replace(/ /g, '-');
                   return (
                     <div
                       key={item.name}
                       className="bg-gray-800 p-4 rounded-lg hover:bg-gray-700 transition cursor-pointer h-32 flex flex-col justify-between"
-                      onClick={() => {
-                        if (tipo && area) {
-                          router.push(`/simulados/${tipo}/${area}`);
-                        }
-                      }}
+                      onClick={() => router.push(`/simulados/${tipo}/${area}`)}
                     >
                       <div>
                         <Icon className="w-8 h-8 text-blue-400 mb-2" />

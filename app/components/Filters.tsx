@@ -87,7 +87,18 @@ export default function Filters() {
                 alert('Selecione a área!');
                 return;
               }
-              router.push(`/simulados/${tipo}/${area}?dificuldade=${dificuldade}&tempo=${tempo}`);
+              // Padroniza dificuldade para o valor do banco
+              let dificuldadePadrao = dificuldade;
+              if (dificuldade === 'INTERMEDIARIO') dificuldadePadrao = 'Intermediário';
+              if (dificuldade === 'FACIL') dificuldadePadrao = 'Fácil';
+              if (dificuldade === 'DIFICIL') dificuldadePadrao = 'Difícil';
+              // Padroniza area para o slug do banco
+              let areaPadrao = area;
+              if (tipo === 'certificacoes' && area === 'aws') areaPadrao = 'aws-cloud';
+              if (tipo === 'certificacoes' && area === 'google-cloud') areaPadrao = 'google-cloud';
+              if (tipo === 'certificacoes' && area === 'azure') areaPadrao = 'azure';
+              // Adicione outros casos se necessário
+              router.push(`/simulados/${tipo}/${areaPadrao}?dificuldade=${dificuldadePadrao}&tempo=${tempo}`);
             }}
           >
             Buscar

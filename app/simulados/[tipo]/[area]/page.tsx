@@ -32,14 +32,15 @@ export default function SimuladosAreaPage() {
         .eq("tipo", tipo)
         .eq("area", area);
       if (dificuldade) {
-        query = query.eq("descricao", dificuldade);
+        // Busca ignorando maiúsculas/minúsculas e acentos
+        query = query.ilike("descricao", `%${dificuldade}%`);
       }
       if (tempo) {
-        // tempo = 30 (até 30min), 60 (30 a 60min), 61 (mais de 60min)
+        // tempo = 30 (até 30min), 60 (30 a 60min, incluindo 60), 61 (mais de 60min)
         if (tempo === "30") {
           query = query.lte("tempo", 30);
         } else if (tempo === "60") {
-          query = query.gt("tempo", 30).lte("tempo", 60);
+          query = query.gte("tempo", 31).lte("tempo", 60); // inclui 60
         } else if (tempo === "61") {
           query = query.gt("tempo", 60);
         }
