@@ -1,5 +1,5 @@
 
-import EnvDebug from './components/EnvDebug';
+// import EnvDebug from './components/EnvDebug';
 import Hero from './components/Hero';
 import Filters from './components/Filters';
 import PopularSimulados from './components/PopularSimulados';
@@ -8,7 +8,7 @@ import HowItWorks from './components/HowItWorks';
 export default function Home() {
   return (
     <div>
-      <EnvDebug />
+      {/* <EnvDebug /> */}
       <Hero />
       <Filters />
       <div className="bg-gray-800 py-4 px-4 text-center">
